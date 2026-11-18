@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Produtos - Burger King Admin</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-off-white-bg text-on-surface min-h-screen">
+    <header class="bg-surface border-b-2 border-bk-brown sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between">
+            <a href="painel.html" class="font-bold text-flame-red text-xl">BURGER KING</a>
+            <div class="flex items-center gap-2">
+                <a href="painel.html" class="text-bk-brown font-bold hover:text-flame-red transition flex items-center gap-1">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    Voltar ao painel
+                </a>
+                <a href="../index.html" class="text-bk-brown font-bold hover:text-flame-red transition flex items-center gap-1 px-2" aria-label="Menu principal">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="hidden sm:inline">Menu principal</span>
+                </a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-5 py-8">
+        <div class="flex flex-col gap-4 md:flex-row md:justify-between md:items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-bk-brown">Produtos cadastrados</h1>
+                <p class="text-on-surface-variant mt-1">Confira os produtos disponíveis no cardápio.</p>
+            </div>
+            <a href="produto.html" class="bg-flame-red text-white font-bold px-6 py-3 rounded-lg text-center">+ Novo produto</a>
+        </div>
+        <div id="listaProdutos" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-surface border-2 border-bk-brown rounded-xl p-6 text-center">Carregando produtos...</div>
+        </div>
+    </main>
+    <script type="module" src="../js/produtos.js"></script>
+</body>
+</html>
