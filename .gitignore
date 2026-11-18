@@ -1,0 +1,72 @@
+# ========================================
+# VARIÁVEIS DE AMBIENTE
+# ========================================
+.env
+.env.local
+.env.*.local
+
+# ========================================
+# NODE_MODULES E DEPENDÊNCIAS
+# ========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ========================================
+# BUILD E DIST
+# ========================================
+dist/
+build/
+.dist/
+
+# ========================================
+# IDE E EDITORES
+# ========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ========================================
+# SISTEMAS OPERACIONAIS
+# ========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+
+# ========================================
+# ARQUIVOS TEMPORÁRIOS
+# ========================================
+*.tmp
+*.log
+*.temp
+.cache/
+
+# ========================================
+# VITE
+# ========================================
+.vite/
+dist-old/
+
+# ========================================
+# SEGURANÇA - NUNCA COMMITAR!
+# ========================================
+# Arquivo com credenciais reais
+.env.local
+.env.*.local
+
+# Chaves SSH
+*.pem
+*.key
+
+# Tokens e API keys
+secrets.json
+credentials.json

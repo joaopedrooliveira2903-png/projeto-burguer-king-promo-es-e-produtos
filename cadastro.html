@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar conta - Burger King</title>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800&family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-off-white-bg text-on-surface font-body">
+    <main class="min-h-screen flex items-center justify-center px-4 py-8">
+        <section class="w-full max-w-md bg-surface border-2 border-bk-brown rounded-2xl p-8 shadow-xl">
+            <a href="login.html" class="inline-flex items-center gap-2 text-bk-brown font-bold hover:text-flame-red mb-6">
+                <span class="material-symbols-outlined">arrow_back</span> Voltar para login
+            </a>
+            <div class="text-center mb-8">
+                <span class="material-symbols-outlined text-flame-red text-5xl" style="font-variation-settings:'FILL' 1">lunch_dining</span>
+                <h1 class="font-display text-3xl font-bold text-bk-brown mt-2">Criar sua conta</h1>
+                <p class="text-on-surface-variant mt-2">Cadastre-se para comprar no Burger King.</p>
+            </div>
+            <form id="cadastroForm" class="space-y-5">
+                <div>
+                    <label for="nome" class="block font-bold text-bk-brown mb-2">Nome</label>
+                    <input id="nome" type="text" required minlength="2" autocomplete="name" placeholder="Seu nome" class="w-full px-4 py-3 rounded-lg border-2 border-surface-container-high">
+                </div>
+                <div>
+                    <label for="email" class="block font-bold text-bk-brown mb-2">E-mail</label>
+                    <input id="email" type="email" required autocomplete="email" placeholder="seu@email.com" class="w-full px-4 py-3 rounded-lg border-2 border-surface-container-high">
+                </div>
+                <div>
+                    <label for="senha" class="block font-bold text-bk-brown mb-2">Senha</label>
+                    <input id="senha" type="password" required minlength="6" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" class="w-full px-4 py-3 rounded-lg border-2 border-surface-container-high">
+                </div>
+                <div>
+                    <label for="confirmarSenha" class="block font-bold text-bk-brown mb-2">Confirmar senha</label>
+                    <input id="confirmarSenha" type="password" required minlength="6" autocomplete="new-password" placeholder="Repita sua senha" class="w-full px-4 py-3 rounded-lg border-2 border-surface-container-high">
+                </div>
+                <div id="mensagem" class="hidden rounded-lg p-4 text-sm font-semibold"></div>
+                <button type="submit" class="w-full bg-flame-red text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">person_add</span> Criar conta
+                </button>
+            </form>
+        </section>
+    </main>
+    <script type="module">
+        import { supabase } from './js/supabase.js';
+        const form = document.getElementById('cadastroForm');
+        const mensagem = document.getElementById('mensagem');
+        function mostrar(texto, tipo = 'erro') {
+            mensagem.textContent = texto;
+            mensagem.className = `rounded-lg p-4 text-sm font-semibold ${tipo === 'sucesso' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+        }
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const senha = document.getElementById('senha').value;
+            const confirmar = document.getElementById('confirmarSenha').value;
+            if (senha !== confirmar) return mostrar('As senhas não conferem.');
+            const botao = form.querySelector('button[type="submit"]');
+            botao.disabled = true;
+            botao.textContent = 'Criando conta...';
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password: senha,
+                    options: { data: { nome, tipo_usuario: 'USER' } }
+                });
+                if (error) throw error;
+                if (data.session) {
+                    mostrar('Conta criada! Redirecionando...', 'sucesso');
+                    setTimeout(() => { window.location.href = 'usuario/index.html'; }, 800);
+                } else {
+                    mostrar('Conta criada! Confirme seu e-mail para entrar.', 'sucesso');
+                    form.reset();
+                }
+            } catch (error) {
+                console.error('Erro ao criar usuário:', error);
+                mostrar(error.message || 'Não foi possível criar a conta.');
+            } finally {
+                botao.disabled = false;
+                botao.innerHTML = '<span class="material-symbols-outlined">person_add</span> Criar conta';
+            }
+        });
+    </script>
+</body>
+</html>

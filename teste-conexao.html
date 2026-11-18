@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Conexão Supabase - Burger King Admin</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800&family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: linear-gradient(135deg, #F5EBDC 0%, #F7EDDE 100%);
+            min-height: 100vh;
+        }
+
+        .console-output {
+            font-family: 'Courier New', monospace;
+            background: #1f1b12;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .console-log { color: #00ff00; }
+        .console-error { color: #ff4444; }
+        .console-warning { color: #ffbb00; }
+        .console-success { color: #00ff88; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-ok {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(214, 35, 0, 0.3);
+            border-top: 2px solid #D62300;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+</head>
+
+<body class="text-on-surface">
+    <div class="container mx-auto max-w-4xl px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-3 mb-4">
+                <span class="material-symbols-outlined text-5xl" style="color: #D62300; font-variation-settings: 'FILL' 1;">
+                    lunch_dining
+                </span>
+                <h1 class="font-display font-extrabold text-3xl" style="color: #502314;">
+                    BURGER KING
+                </h1>
+            </div>
+            <h2 class="text-2xl font-bold" style="color: #502314; margin-top: 10px;">
+                Teste de Conexão Supabase
+            </h2>
+            <p class="text-gray-600 mt-2">Verificar conectividade com banco de dados</p>
+        </div>
+
+        <!-- Main Container -->
+        <div class="bg-white rounded-lg shadow-xl border-2" style="border-color: #502314;">
+            <!-- Status Cards -->
+            <div class="p-6 border-b-2" style="border-color: #F7EDDE;">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Supabase URL -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-semibold text-gray-700">URL Supabase</span>
+                            <span id="status-url" class="status-badge status-pending">
+                                <span class="spinner"></span> Verificando
+                            </span>
+                        </div>
+                        <p id="url-text" class="text-xs text-gray-500 break-all">Carregando...</p>
+                    </div>
+
+                    <!-- API Key -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-semibold text-gray-700">API Key</span>
+                            <span id="status-key" class="status-badge status-pending">
+                                <span class="spinner"></span> Verificando
+                            </span>
+                        </div>
+                        <p id="key-text" class="text-xs text-gray-500">Carregando...</p>
+                    </div>
+
+                    <!-- Conexão DB -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-semibold text-gray-700">Banco de Dados</span>
+                            <span id="status-db" class="status-badge status-pending">
+                                <span class="spinner"></span> Testando
+                            </span>
+                        </div>
+                        <p id="db-text" class="text-xs text-gray-500">Conectando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Console Output -->
+            <div class="p-6">
+                <h3 class="text-sm font-semibold mb-3" style="color: #502314;">📋 Saída do Console:</h3>
+                <div class="console-output" id="console">
+                    <div class="console-log">Iniciando teste de conexão...</div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="p-6 bg-gray-50 border-t-2" style="border-color: #F7EDDE;">
+                <div class="flex gap-3 flex-wrap">
+                    <button id="btn-test" class="px-6 py-2 rounded-lg font-bold text-white" style="background-color: #D62300;" onclick="iniciarTeste()">
+                        <span class="material-symbols-outlined align-middle">refresh</span> Executar Teste
+                    </button>
+                    <button id="btn-clear" class="px-6 py-2 rounded-lg font-bold text-gray-700 border-2" style="border-color: #502314;" onclick="limparConsole()">
+                        <span class="material-symbols-outlined align-middle">delete</span> Limpar
+                    </button>
+                    <button id="btn-copy" class="px-6 py-2 rounded-lg font-bold text-gray-700 border-2" style="border-color: #502314;" onclick="copiarSaida()">
+                        <span class="material-symbols-outlined align-middle">content_copy</span> Copiar Saída
+                    </button>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="p-6 bg-blue-50 border-l-4" style="border-color: #1e40af;">
+                <p class="text-sm text-blue-900">
+                    <span class="font-semibold">💡 Dica:</span> As chaves devem estar no arquivo <code class="bg-blue-100 px-2 py-1 rounded">.env.local</code>
+                    com as variáveis <code class="bg-blue-100 px-2 py-1 rounded">VITE_SUPABASE_URL</code> e <code class="bg-blue-100 px-2 py-1 rounded">VITE_SUPABASE_ANON_KEY</code>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-gray-500 text-sm mt-6">
+            <p>Teste automatizado - Burger King Admin System</p>
+            <p>Data: <span id="data-hora"></span></p>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        // Credenciais do supabase.js (dentro do projeto)
+        const SUPABASE_URL = 'https://savdjbiovceacwdiitwf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhdmRqYmlvdmNlYWN3ZGlpdHdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNTg5NzQsImV4cCI6MjEwMjczNDk3NH0.ZDkSERdD7MxQRLK8oteqQPBZzIeoue4vPdAZPMCUAZA';
+
+        let supabase;
+
+        window.iniciarTeste = async function() {
+            limparConsole();
+            logConsole('================================', 'log');
+            logConsole('INICIANDO TESTE DE CONEXÃO SUPABASE', 'log');
+            logConsole('================================', 'log');
+            logConsole('', 'log');
+
+            // Atualizar data/hora
+            document.getElementById('data-hora').textContent = new Date().toLocaleString('pt-BR');
+
+            // 1. Verificar URL
+            logConsole('1️⃣ Verificando URL Supabase...', 'log');
+            if (SUPABASE_URL && SUPABASE_URL.includes('supabase.co')) {
+                logConsole('✅ URL válida: ' + SUPABASE_URL, 'success');
+                document.getElementById('status-url').innerHTML = '<span class="status-badge status-ok">✅ OK</span>';
+                document.getElementById('url-text').textContent = SUPABASE_URL;
+            } else {
+                logConsole('❌ URL inválida!', 'error');
+                document.getElementById('status-url').innerHTML = '<span class="status-badge status-error">❌ ERRO</span>';
+                document.getElementById('url-text').textContent = 'URL não configurada';
+                return;
+            }
+
+            logConsole('', 'log');
+
+            // 2. Verificar API Key
+            logConsole('2️⃣ Verificando API Key...', 'log');
+            if (SUPABASE_ANON_KEY && SUPABASE_ANON_KEY.length > 50) {
+                const keyPreview = SUPABASE_ANON_KEY.substring(0, 20) + '...' + SUPABASE_ANON_KEY.substring(SUPABASE_ANON_KEY.length - 10);
+                logConsole('✅ API Key válida: ' + keyPreview, 'success');
+                document.getElementById('status-key').innerHTML = '<span class="status-badge status-ok">✅ OK</span>';
+                document.getElementById('key-text').textContent = keyPreview;
+            } else {
+                logConsole('❌ API Key inválida!', 'error');
+                document.getElementById('status-key').innerHTML = '<span class="status-badge status-error">❌ ERRO</span>';
+                document.getElementById('key-text').textContent = 'API Key não configurada';
+                return;
+            }
+
+            logConsole('', 'log');
+
+            // 3. Testar Conexão
+            logConsole('3️⃣ Testando conexão com banco de dados...', 'log');
+            logConsole('Criando cliente Supabase...', 'log');
+
+            try {
+                supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                logConsole('✅ Cliente criado com sucesso', 'success');
+
+                // Teste de leitura
+                logConsole('Tentando buscar dados das tabelas...', 'log');
+                
+                const { data: categorias, error: erroCategoria } = await supabase
+                    .from('categorias')
+                    .select('count', { count: 'exact', head: true });
+
+                if (erroCategoria) {
+                    logConsole('⚠️ Erro ao buscar categorias: ' + erroCategoria.message, 'warning');
+                } else {
+                    logConsole('✅ Tabela "categorias" acessível', 'success');
+                }
+
+                const { data: produtos, error: erroProdutos } = await supabase
+                    .from('produtos_servicos')
+                    .select('count', { count: 'exact', head: true });
+
+                if (erroProdutos) {
+                    logConsole('⚠️ Erro ao buscar produtos: ' + erroProdutos.message, 'warning');
+                } else {
+                    logConsole('✅ Tabela "produtos_servicos" acessível', 'success');
+                }
+
+                const { data: usuarios, error: erroUsuarios } = await supabase
+                    .from('usuarios')
+                    .select('count', { count: 'exact', head: true });
+
+                if (erroUsuarios) {
+                    logConsole('⚠️ Erro ao buscar usuários: ' + erroUsuarios.message, 'warning');
+                } else {
+                    logConsole('✅ Tabela "usuarios" acessível', 'success');
+                }
+
+                logConsole('', 'log');
+                logConsole('🎉 TESTE CONCLUÍDO COM SUCESSO!', 'success');
+                document.getElementById('status-db').innerHTML = '<span class="status-badge status-ok">✅ CONECTADO</span>';
+                document.getElementById('db-text').textContent = 'Conexão estabelecida';
+
+            } catch (erro) {
+                logConsole('❌ Erro ao conectar: ' + erro.message, 'error');
+                document.getElementById('status-db').innerHTML = '<span class="status-badge status-error">❌ ERRO</span>';
+                document.getElementById('db-text').textContent = erro.message;
+            }
+
+            logConsole('', 'log');
+            logConsole('================================', 'log');
+            logConsole('Fim do teste - ' + new Date().toLocaleTimeString('pt-BR'), 'log');
+            logConsole('================================', 'log');
+        };
+
+        function logConsole(mensagem, tipo = 'log') {
+            const consoleDiv = document.getElementById('console');
+            const linha = document.createElement('div');
+            linha.className = `console-${tipo}`;
+            linha.textContent = mensagem;
+            consoleDiv.appendChild(linha);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        window.limparConsole = function() {
+            document.getElementById('console').innerHTML = '';
+        };
+
+        window.copiarSaida = function() {
+            const console = document.getElementById('console');
+            const texto = Array.from(console.children)
+                .map(el => el.textContent)
+                .join('\n');
+
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('Saída copiada para a área de transferência!');
+            });
+        };
+
+        // Executar teste automaticamente ao carregar
+        window.addEventListener('load', () => {
+            iniciarTeste();
+        });
+    </script>
+</body>
+
+</html>
